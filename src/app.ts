@@ -3,11 +3,14 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import notificationRoutes from './routes/notificationRoutes';
 import { errorHandler } from './middlewares/errorHandler';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerDocument } from './swagger';
 
 dotenv.config();
 const app = express();
 
 app.use(express.json());
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api', notificationRoutes);
 
 // Basic health check endpoint

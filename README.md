@@ -6,7 +6,26 @@ A production-grade, highly structured, and testable backend microservice built w
 
 ## Architecture Overview & Design Choices
 
+```mermaid
+graph TD
+    Client["Client<br>Application"] -->|"POST<br>/api/notifications"| API["Node.js / Express<br>API Server"]
+    API -->|"Validates &<br>Processes"| Service["Notification<br>Service"]
+    Service -->|"Reads /<br>Writes"| DB[("MongoDB<br>Cluster")]
+    
+    subgraph Docker Compose Network
+    API
+    DB
+    end
+```
+
 The project is structured following clean coding guidelines and a modular, layered architecture to isolate concerns:
+
+```mermaid
+graph TD
+    C["Controller<br>Layer"] -->|"HTTP Routing &<br>Payload Validation"| S["Service<br>Layer"]
+    S -->|"Business Logic &<br>Delivery Simulation"| R["Repository<br>Layer"]
+    R -->|"Mongoose<br>Data Access"| D[("Database")]
+```
 
 ```
 NotifyCore/
@@ -32,6 +51,25 @@ NotifyCore/
 1. **Repository Pattern**: By decoupling service logic from Mongoose directly, we make database interactions highly mockable for unit testing, preventing external database dependencies in services.
 2. **Centralized Error Handling**: Express middleware intercepts all async errors dynamically, standardizing response structure while avoiding exposure of database-specific stack traces or security details in production.
 3. **Robust Payload Validation**: Pure TypeScript custom validation rules validate emails (RFC 5322 regex) and E.164 phone formats safely before hitting business layers, protecting against malicious database injections and invalid records.
+
+---
+
+## The Problem Solved & Real-World Context
+In distributed architectures, multiple services (e.g., Order, User, Billing) often need to send out alerts or emails. Building dispatch logic directly into every microservice creates massive redundancy and tight coupling. **NotifyCore** extracts that responsibility into a standalone, stateless microservice. 
+
+**Real-world Use Case:** When an e-commerce order is placed, the order service simply sends a generic REST API request to this Notification Service, which independently validates the payload, logs the intent to the database, and handles external dispatching.
+
+---
+
+## Challenges Overcome (DevOps)
+**Container Initialization Race Conditions:** 
+During Docker orchestration, the Node.js API would crash if it attempted to connect to MongoDB before the database finished initializing. 
+*Solution:* Leveraged Docker Compose health checks (`test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]`) and explicitly configured the API service to wait using the `depends_on: service_healthy` condition. This guarantees reliable startup sequencing.
+
+---
+
+## Future Scope
+Currently, notification dispatching is simulated synchronously within the API request lifecycle. By introducing an asynchronous message broker (like **RabbitMQ** or **BullMQ/Redis**), we can decouple ingestion from delivery entirely, achieving lower latency and supporting automated retry mechanisms.
 
 ---
 
@@ -95,6 +133,13 @@ curl -i http://localhost:3000/health
 ---
 
 ## API Documentation
+
+### 📚 Interactive Swagger UI
+An interactive Swagger UI is available for easy API exploration and testing.
+Once the server is running, visit:
+👉 **[http://localhost:3000/api-docs](http://localhost:3000/api-docs)**
+
+---
 
 ### 1. Send Notification
 - **Endpoint**: `POST /api/notifications`
