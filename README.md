@@ -2,6 +2,12 @@
 
 A production-grade, highly structured, and testable backend microservice built with **Node.js**, **TypeScript**, **Express**, and **MongoDB**. Containerized with **Docker** and fully orchestrated with **Docker Compose**, this service adopts modern development practices, including strict type checking, centralized error handling, repository pattern, and extensive automated test suites using **Jest** and **Supertest** with >98% statement coverage.
 
+--- 
+
+## 🎥 Project Demo
+
+[![NotifyCore Demo](https://img.youtube.com/vi/e0o1d8mAb34/maxresdefault.jpg)](https://youtu.be/e0o1d8mAb34)
+
 ---
 
 ## Architecture Overview & Design Choices
