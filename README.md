@@ -6,7 +6,7 @@ A production-grade, highly structured, and testable backend microservice built w
 
 ## 🎥 Project Demo
 
-[![NotifyCore Demo](https://img.youtube.com/vi/e0o1d8mAb34/maxresdefault.jpg)](https://youtu.be/e0o1d8mAb34)
+[![Watch the NotifyCore Demo on YouTube](https://img.youtube.com/vi/e0o1d8mAb34/maxresdefault.jpg)](https://youtu.be/e0o1d8mAb34)
 
 ---
 
